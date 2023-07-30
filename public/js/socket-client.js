@@ -1,49 +1,47 @@
 
-// Selectors 
-const  ntfOnline = document.querySelector('#ntfOnline')
-const ntfOffline = document.querySelector('#ntfOffline')
-const txtMessage = document.querySelector('#txtMessage');
-const btnSend = document.querySelector('#btnSend');
+// Referencias del HTML
+const lblOnline  = document.querySelector('#lblOnline');
+const lblOffline = document.querySelector('#lblOffline');
+const txtMensaje = document.querySelector('#txtMensaje');
+const btnEnviar  = document.querySelector('#btnEnviar');
 
-ntfOffline.style.display = 'none';
 
 const socket = io();
 
-// Connect
+
+
 socket.on('connect', () => {
-    console.log('Conectado');
-    ntfOnline.style.display = '';
+    // console.log('Conectado');
 
-    setTimeout(() => {
-        ntfOnline.style.display = 'none';
-    }, 3000);
-})
+    lblOffline.style.display = 'none';
+    lblOnline.style.display  = '';
 
-// Disconnect
-socket.on('disconnect', () => {
-    console.log('Desconectado');
-    ntfOffline.style.display = '';
-
-    setTimeout(() => {
-        ntfOffline.style.display = 'none';
-    }, 3000);
 });
 
-socket.on('send-message', (payload) => {
-    console.log(payload);
+socket.on('disconnect', () => {
+    // console.log('Desconectado del servidor');
+
+    lblOnline.style.display  = 'none';
+    lblOffline.style.display = '';
+});
+
+
+socket.on('enviar-mensaje', (payload) => {
+    console.log( payload )
 })
 
-btnSend.addEventListener('click', () => {
-    const message = txtMessage.value;
 
+btnEnviar.addEventListener( 'click', () => {
+
+    const mensaje = txtMensaje.value;
     const payload = {
-        message,
-        id: '1234',
-        fecha: new Date().getDate()
+        mensaje,
+        id: '123ABC',
+        fecha: new Date().getTime()
     }
-
-    // Server Communication
-    socket.emit('send-message', payload, (id) => {
-        console.log('From Server', id);
+    
+    socket.emit( 'enviar-mensaje', payload, ( id ) => {
+        console.log('Desde el server', id );
     });
-})
+
+});
